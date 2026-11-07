@@ -57,7 +57,7 @@ a{color:inherit}
 .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(75% 70% at 50% 50%,var(--sec) 35%,transparent 88%);pointer-events:none}
 #headline{font-size:clamp(2rem,6.2vw,4.5rem);max-width:17ch;margin:26px auto 0;text-shadow:0 0 30px var(--glow);text-wrap:balance}
 .w{display:inline-block;white-space:nowrap}
-.ch{opacity:.14;animation:lit .5s ease forwards;animation-delay:calc(var(--i) * 38ms + .25s)}
+.ch{opacity:.14;animation:lit .5s ease forwards;animation-play-state:paused;animation-delay:calc(var(--i) * 38ms + .25s)}
 @keyframes lit{to{opacity:1}}
 .sub{max-width:36rem;margin:24px auto 0;font-size:clamp(1rem,2.1vw,1.2rem);color:var(--dim)}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
@@ -136,3 +136,16 @@ h2.display{font-size:clamp(1.6rem,4vw,2.9rem);margin-top:14px;max-width:22ch;tex
   html{scroll-behavior:auto}
   .mc,.band,body{transition:none}
 }
+
+.entered .ch{animation-play-state:running}
+
+/* entry screen */
+.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;text-align:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));background:radial-gradient(60% 50% at 50% 45%,var(--glow),transparent 75%),var(--bg);overflow-y:auto}
+.gate-box{max-width:30rem;display:flex;flex-direction:column;align-items:center;gap:0}
+.gate-flame{width:54px;height:54px;margin-bottom:22px;filter:drop-shadow(0 0 18px var(--glow))}
+.gate-title{font-size:clamp(2rem,8vw,3.6rem);margin-top:14px;text-shadow:0 0 30px var(--glow);text-wrap:balance}
+.gate-sub{margin:16px 0 36px;color:var(--dim)}
+.gate-btn{font-size:1.05rem;padding:15px 34px;border:0;cursor:pointer;font-family:inherit;animation:ring 2.2s ease-out infinite}
+.gate-skip{margin-top:18px;background:none;border:0;color:var(--dim);font:inherit;font-size:.92rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.gate-skip:hover{color:var(--fg)}
+@media (prefers-reduced-motion:reduce){.gate-btn{animation:none}}

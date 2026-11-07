@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createMusic } from './music.js';
-import { START, END } from './config.js';
+import { createYouTube } from './youtube.js';
+import { START, END, YOUTUBE_ID } from './config.js';
 
 export const prefersReducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,17 +29,36 @@ export function useMood() {
   return [mood, toggle];
 }
 
-/* Browsers only allow sound after a tap, so music starts from the button. */
+/* Browsers only allow sound after a tap, so music starts from a button press.
+   Plays the YouTube track when one is set; if it can't play, the built-in generated loop takes over. */
 export function useSound() {
-  const music = useRef(null);
+  const loop = useRef(null);
+  const yt = useRef(null);
+  const wantOn = useRef(false);
   const [on, setOn] = useState(false);
-  useEffect(() => { music.current = createMusic(); return () => music.current && music.current.dispose(); }, []);
-  const toggle = useCallback(() => {
-    if (!music.current) return;
-    if (on) { music.current.stop(); setOn(false); }
-    else if (music.current.start()) setOn(true);
-  }, [on]);
-  return [on, toggle];
+  useEffect(() => {
+    loop.current = createMusic();
+    if (YOUTUBE_ID) {
+      yt.current = createYouTube(YOUTUBE_ID, () => { if (wantOn.current && loop.current) loop.current.start(); });
+    }
+    return () => {
+      if (loop.current) loop.current.dispose();
+      if (yt.current) yt.current.dispose();
+    };
+  }, []);
+  const play = useCallback(() => {
+    wantOn.current = true;
+    const ok = (yt.current && yt.current.start()) || (loop.current && loop.current.start());
+    if (ok) setOn(true);
+  }, []);
+  const pause = useCallback(() => {
+    wantOn.current = false;
+    if (yt.current) yt.current.stop();
+    if (loop.current) loop.current.stop();
+    setOn(false);
+  }, []);
+  const toggle = useCallback(() => { if (on) pause(); else play(); }, [on, play, pause]);
+  return [on, toggle, play];
 }
 
 export function useCountdown() {

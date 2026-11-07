@@ -71,7 +71,9 @@ function Rail() {
 
 export default function App() {
   const [mood, toggleMood] = useMood();
-  const [soundOn, toggleSound] = useSound();
+  const [soundOn, toggleSound, startSound] = useSound();
+  const [entered, setEntered] = React.useState(false);
+  const enterBtn = useRef(null);
   const [hint, setHint] = React.useState(true);
   const sceneCanvas = useRef(null);
   const emberCanvas = useRef(null);
@@ -94,11 +96,40 @@ export default function App() {
 
   useEffect(() => { if (sceneApi.current) sceneApi.current.setMood(mood); }, [mood]);
 
+  /* While the entry screen is up, lock scrolling and put focus on its button. */
+  useEffect(() => {
+    if (entered) { document.body.style.overflow = ''; return; }
+    document.body.style.overflow = 'hidden';
+    if (enterBtn.current) enterBtn.current.focus();
+    return () => { document.body.style.overflow = ''; };
+  }, [entered]);
+
+  const enter = (withSound) => {
+    if (withSound) { startSound(); setHint(false); }
+    setEntered(true);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
       <canvas id="scene" ref={sceneCanvas} aria-hidden="true" />
       <canvas id="embers" ref={emberCanvas} aria-hidden="true" />
-      <div className="page">
+      {!entered && (
+        <div className="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+          <div className="gate-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="gate-flame">
+              <defs><linearGradient id="fl2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stopColor="#ff7a3d" /><stop offset="1" stopColor="#ffc933" /></linearGradient></defs>
+              <path fill="url(#fl2)" d="M12 1.5c.9 4.1 5.6 6.2 5.6 11.4a5.6 5.6 0 0 1-11.2 0c0-2.2 1-3.6 2.4-4.8.1 2 .9 3.2 2.2 3.5-.8-3.6-.5-6.9 1-10.1z" />
+            </svg>
+            <p className="eyebrow">Psalm 149 · Sound of Triumph</p>
+            <h1 id="gate-title" className="display gate-title">100 Hours of Praise</h1>
+            <p className="gate-sub">16–20 November 2026 · RCCG Higher Ground Zonal HQ</p>
+            <button ref={enterBtn} type="button" className="btn btn-solid gate-btn" onClick={() => enter(true)}>Enter with sound</button>
+            <button type="button" className="gate-skip" onClick={() => enter(false)}>Enter without sound</button>
+          </div>
+        </div>
+      )}
+      <div className={'page' + (entered ? ' entered' : '')}>
         <header className="nav wrap">
           <a className="brand" href="#top" aria-label="100 Hours of Praise, top of page">
             <svg viewBox="0 0 24 24" aria-hidden="true">

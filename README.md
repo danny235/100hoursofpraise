@@ -18,4 +18,4 @@ npm run dev
 - `src/config.js`: volunteer form link, start/end time, department list.
 - `src/ministers.js` and `public/ministers/`: add a minister by dropping an image in `public/ministers/` and adding a line.
 - `public/flier.jpg`: the main flier (also used as the social-share image).
-- `src/music.js`: swap for an `<audio>` element if you want to use your own track.
+- `YOUTUBE_ID` in `src/config.js`: the YouTube track that plays when visitors press Enter with sound (set it to an empty string to use the built-in generated loop in `src/music.js`). If the video cannot be embedded, the generated loop plays instead.
