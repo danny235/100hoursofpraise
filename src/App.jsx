@@ -104,8 +104,8 @@ export default function App() {
     return () => { document.body.style.overflow = ''; };
   }, [entered]);
 
-  const enter = (withSound) => {
-    if (withSound) { startSound(); setHint(false); }
+  const enter = () => {
+    startSound(); setHint(false);
     setEntered(true);
     window.scrollTo(0, 0);
   };
@@ -124,8 +124,7 @@ export default function App() {
             <p className="eyebrow">Psalm 149 · Sound of Triumph</p>
             <h1 id="gate-title" className="display gate-title">100 Hours of Praise</h1>
             <p className="gate-sub">16–20 November 2026 · RCCG Higher Ground Zonal HQ</p>
-            <button ref={enterBtn} type="button" className="btn btn-solid gate-btn" onClick={() => enter(true)}>Enter with sound</button>
-            <button type="button" className="gate-skip" onClick={() => enter(false)}>Enter without sound</button>
+            <button ref={enterBtn} type="button" className="btn btn-solid gate-btn" onClick={enter}>Enter</button>
           </div>
         </div>
       )}
